@@ -1,5 +1,5 @@
 {
     "zuluKey": "zuluKey",
-    "db": "mongodb+srv://ibrahim:fatimalove@educloud.xxhcu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    "db": "zulu_db"
   }
   

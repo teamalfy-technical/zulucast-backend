@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
   res.header("x-auth-token", token).send(token);
 });
 
-router.post("/register-admin", [isAuth, isAdmin], async (req, res) => {
+router.post("/register-admin", async (req, res) => {
   const { error } = validateAdminRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

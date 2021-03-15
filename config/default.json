@@ -1,0 +1,5 @@
+{
+    "zuluKey": "zuluKey",
+    "db": "mongodb://localhost/zulu"
+  }
+  

@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const swaggerUI = require("swagger-ui-express");
+const swaggerDocument = require("../services/swagger.json");
 
 const error = require("../middleware/error");
 const authRoute = require("../routes/authentication/auth");
@@ -14,6 +16,11 @@ module.exports = function (app) {
   app.use("/api/genre", genresRoute);
   app.use("/api/release", releaseTypeRoute);
   app.use("/api/movies", moviesRoute);
+  app.use(
+    "/api-docs",
+    swaggerUI.serve,
+    swaggerUI.setup(swaggerDocument, { explorer: true })
+  );
 
   app.use(error);
 };

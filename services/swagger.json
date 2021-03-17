@@ -15,6 +15,10 @@
       {
         "name": "Users",
         "description": "API for end users, admin and super admin"
+      },
+      {
+        "name": "Movie Genres",
+        "description": "API for adding, updating, getting and deleting genre."
       }
 
     ],
@@ -35,22 +39,22 @@
           "name": "x-auth-token"
         }
     },
-    
+
     "paths": {
-      "/auth/login": {
+      "/auth/register": {
         "post": {
-          "summary": "Login user",
+          "summary": "User Registration",
           "tags": [
             "Users"
           ],
-          "description": "Login user in system",
+          "description": "End user registration",
           "parameters": [
             {
-              "name": "user",
+              "name": "Ibrahim",
               "in": "body",
-              "description": "Login user",
+              "description": "Register user",
               "schema": {
-                "$ref": "#/definitions/User"
+                "$ref": "#/definitions/Users"
               }
             }
           ],
@@ -59,19 +63,211 @@
           ],
           "responses": {
             "200": {
-              "description": "Login Success",
+              "description": "Registration Success and return a token",
               "schema": {
-                "$ref": "#/definitions/User"
+                "$ref": "#/definitions/Users"
               }
             },
-            "401":{
-              "description": "Login details are not valid!!"
+            "400":{
+              "description": "Invalid username or password."
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "summary": "User Login",
+          "tags": [
+            "Users"
+          ],
+          "description": "End user login",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "Register user",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Login Success and return a token",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            },
+            "400":{
+              "description": "Email already registered"
+            }
+          }
+        }
+      },
+      "/auth/register-admin": {
+        "post": {
+          "summary": "Admin Registration (Role is not default in this case, should be: admin or super admin)",
+          "tags": [
+            "Users"
+          ],
+          "description": "Admin Registration",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "Register admin",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Login Success and return a token",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            },
+            "400":{
+              "description": "Email already registered"
+            }
+          }
+        }
+      },
+      "/auth/": {
+        "get": {
+          "summary": "Get all Users",
+          "tags": [
+            "Users"
+          ],
+          "description": "Get users",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "get users",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Return all users in the system",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
             },
             "404":{
-              "description": "Email is not registered!"
+              "description": "Users not found"
+            }
+          }
+        }
+      },
+      "/auth/:id": {
+        "get": {
+          "summary": "Get a single User",
+          "tags": [
+            "Users"
+          ],
+          "description": "Get a user",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "get user",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Return all users in the system",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
             },
-            "500":{
-              "description": "User login failed!!"
+            "404":{
+              "description": "Users not found"
+            }
+          }
+        }
+      },
+      "/auth/delete/:id": {
+        "delete": {
+          "summary": "Delete a User (this is a protected endpoint, should provide super admin token for this.)",
+          "tags": [
+            "Users"
+          ],
+          "description": "Delete a user",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "delete user",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Return deleted user details",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            },
+            "404":{
+              "description": "Users not found"
+            }
+          }
+        }
+      },
+      "/auth/update/:id": {
+        "put": {
+          "summary": "Update a User (this is a protected endpoint, should provide super admin token for this.)",
+          "tags": [
+            "Users"
+          ],
+          "description": "Update a user",
+          "parameters": [
+            {
+              "name": "Ibrahim",
+              "in": "body",
+              "description": "update user",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "Return updated user details",
+              "schema": {
+                "$ref": "#/definitions/Users"
+              }
+            },
+            "404":{
+              "description": "Users not found"
             }
           }
         }
@@ -80,20 +276,32 @@
 
     "definitions": {
 
-      "User": {
+      "Users": {
         "properties": {
+          "firstName": {
+            "type": "string",
+            "required": true
+          },
+          "lastName": {
+            "type": "string",
+            "required": true
+          },
           "email": {
-            "type": "string"
+            "type": "string",
+            "required": true
           },
           "password": {
-            "type": "string"
-          }
-        }
-      },
-      "userEmail":{
-        "properties": {
-          "email": {
-            "type": "string"
+            "type": "string",
+            "required": true
+          },
+          "role": {
+              "type": "string",
+              "default": "end user",
+              "required": true
+          },
+          "registrationDate": {
+              "type": "Date",
+              "default": "new Date()"
           }
         }
       }

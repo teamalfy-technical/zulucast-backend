@@ -12,6 +12,11 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isBanner: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   price: {
     type: Number,
     required: true,
@@ -56,6 +61,7 @@ function validateMovie(movieObj) {
   const schema = Joi.object({
     title: Joi.string().min(3).max(255).required(),
     genre: Joi.string().required(),
+    isBanner: Joi.bool().required(),
     price: Joi.number().min(0).required(),
     description: Joi.string().min(3).required(),
     actor: Joi.string().min(3).max(255).required(),

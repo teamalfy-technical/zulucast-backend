@@ -16,10 +16,10 @@ router.post("/login", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
-  if (!user) return res.status(404).send("Invalid email or password");
+  if (!user) return res.status(400).send("Invalid email or password");
 
   const password = await unhash(req.body.password.trim(), user.password);
-  if (!password) return res.status(404).send("Invalid username or password");
+  if (!password) return res.status(400).send("Invalid username or password");
 
   const token = user.generateToken();
   res.header("x-auth-token", token).send(token);
@@ -35,8 +35,7 @@ router.post("/register", async (req, res) => {
   const newUser = new Auth({
     role: "end user",
     email: req.body.email.trim(),
-    lastName: req.body.lastName.trim(),
-    firstName: req.body.firstName.trim(),
+    username: req.body.username.trim(),
     password: await hash(req.body.password.trim()),
   });
 
@@ -55,8 +54,7 @@ router.post("/register-admin", async (req, res) => {
   const newUser = new Auth({
     role: req.body.role,
     email: req.body.email.trim(),
-    lastName: req.body.lastName.trim(),
-    firstName: req.body.firstName.trim(),
+    username: req.body.username.trim(),
     password: await hash(req.body.password.trim()),
   });
 
@@ -103,8 +101,7 @@ router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
   const updatedUser = await Auth.findByIdAndUpdate(req.params.id, {
     role: req.body.role,
     email: req.body.email,
-    lastName: req.body.lastName,
-    firstName: req.body.firstName,
+    username: req.body.username,
     password: await hash(req.body.password.trim()),
   });
   res.send(updatedUser);

@@ -5,11 +5,7 @@ const config = require("config");
 const Joi = require("@hapi/joi");
 
 const authSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
+  username: {
     type: String,
     required: true,
   },
@@ -37,8 +33,7 @@ authSchema.methods.generateToken = function () {
       _id: this._id,
       role: this.role,
       email: this.email,
-      lastName: this.lastName,
-      firstName: this.firstName,
+      username: this.username,
     },
     config.get("zuluKey")
   );
@@ -58,8 +53,7 @@ function validateUserRegistration(userObj) {
     role: Joi.string(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(20).required(),
-    lastName: Joi.string().min(3).max(16).required(),
-    firstName: Joi.string().min(3).max(16).required(),
+    username: Joi.string().min(3).max(20).required(),
   });
   return schema.validate(userObj);
 }
@@ -69,8 +63,7 @@ function validateAdminRegistration(userObj) {
     role: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(20).required(),
-    lastName: Joi.string().min(3).max(16).required(),
-    firstName: Joi.string().min(3).max(16).required(),
+    username: Joi.string().min(3).max(20).required(),
   });
   return schema.validate(userObj);
 }

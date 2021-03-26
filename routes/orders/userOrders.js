@@ -6,17 +6,17 @@ const { Orders, validateOrder } = require("../../model/orders/userOrders");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send(moment().add(3, "days"));
-});
+// router.get("/", isAuth, (req, res) => {
+//   res.send(req.userToken);
+// });
 
 router.post("/", isAuth, async (req, res) => {
   const { error } = validateOrder(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const order = new Orders({
-    username: req.body.username,
-    email: req.body.email,
+    username: req.userToken.username,
+    email: req.userToken.email,
     title: req.body.title,
     price: req.body.price,
     description: req.body.description,
@@ -31,19 +31,26 @@ router.post("/", isAuth, async (req, res) => {
   res.send(order);
 });
 
-router.get("/:id", async (req, res) => {
-  const order = await Orders.findById(req.params.id);
+// router.get("/:id", async (req, res) => {
+//   const order = await Orders.findById(req.params.id);
+//   if (!order) return res.status(404).send("No order found");
+
+//   res.send(order);
+// });
+
+router.get("/", isAuth, async (req, res) => {
+  const order = await Orders.find({ email: req.userToken.email });
   if (!order) return res.status(404).send("No order found");
 
   res.send(order);
 });
 
-router.get("/", async (req, res) => {
-  const orders = await Orders.find();
-  if (!orders) return res.status(404).send("No order found");
+// router.get("/", async (req, res) => {
+//   const orders = await Orders.find();
+//   if (!orders) return res.status(404).send("No order found");
 
-  res.send(orders);
-});
+//   res.send(orders);
+// });
 
 router.delete("/delete/:id", async (req, res) => {
   const movie = await LoggedOutCart.find({ userID: req.params.id });

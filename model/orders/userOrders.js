@@ -47,9 +47,7 @@ const orderSchema = new mongoose.Schema({
 
 function validateOrder(userObj) {
   const schema = Joi.object({
-    username: Joi.string().required(),
-    email: Joi.email().required(),
-    title: Joi.string().string().required(),
+    title: Joi.string().required(),
     price: Joi.number().min(0).required(),
     description: Joi.string().required(),
     actor: Joi.string().required(),

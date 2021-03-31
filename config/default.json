@@ -1,5 +1,6 @@
 {
     "zuluKey": "zuluKey",
-    "db": "mongodb+srv://ibrahim:fatimalove@educloud.xxhcu.mongodb.net/zulu"
+    "db": "mongodb+srv://ibrahim:fatimalove@educloud.xxhcu.mongodb.net/zulu",
+    "flutterwave_key": "FLWSECK_TEST-d0f6940575cdc47ab6a9558ebd3bf965-X"
   }
   

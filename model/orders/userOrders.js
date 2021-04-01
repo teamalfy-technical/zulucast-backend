@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Joi = require("@hapi/joi");
+const moment = require("moment");
 
 const orderSchema = new mongoose.Schema({
   username: {
@@ -42,6 +43,9 @@ const orderSchema = new mongoose.Schema({
   oderDate: {
     type: Date,
     default: new Date(),
+  },
+  expiryDate: {
+    type: Date,
   },
 });
 

@@ -47,6 +47,13 @@ const orderSchema = new mongoose.Schema({
   expiryDate: {
     type: Date,
   },
+  longevity: {
+    type: Number,
+  },
+  startWatch: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 function validateOrder(userObj) {

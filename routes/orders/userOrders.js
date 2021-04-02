@@ -1,6 +1,7 @@
 const express = require("express");
 const moment = require("moment");
 const isAuth = require("../../middleware/isAuth");
+const { Longevity } = require("../../model/movies/movieLongevity");
 
 const { Orders, validateOrder } = require("../../model/orders/userOrders");
 
@@ -14,6 +15,8 @@ router.post("/", isAuth, async (req, res) => {
   const { error } = validateOrder(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
+  const obj = await Longevity.findOne();
+
   const order = new Orders({
     username: req.userToken.username,
     email: req.userToken.email,
@@ -24,10 +27,22 @@ router.post("/", isAuth, async (req, res) => {
     duration: req.body.duration,
     moviePictureURL: req.body.moviePictureURL,
     movieVideoURL: req.body.movieVideoURL,
-    expiryDate: moment().add(7, "days"),
+    longevity: obj.longevity,
+    //expiryDate: moment().add(7, "days"),
   });
 
   await order.save();
+  res.send(order);
+});
+
+router.post("/update", isAuth, async (req, res) => {
+  const order = await Orders.findById(req.body._id);
+
+  const obj = await Longevity.findOne();
+
+  order.startWatch = true;
+  order.expiryDate = moment().add(obj.longevity, "days");
+  order.save();
   res.send(order);
 });
 

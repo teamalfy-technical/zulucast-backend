@@ -10,6 +10,7 @@ const releaseTypeRoute = require("../routes/movieReleaseTypes/releaseTypes");
 const moviesRoute = require("../routes/movies/movies");
 const paymentRoute = require("../routes/payments/payments");
 const orderRoute = require("../routes/orders/userOrders");
+const longevity = require("../routes/movies/movieLongevity");
 
 module.exports = function (app) {
   app.use(express.json());
@@ -20,6 +21,7 @@ module.exports = function (app) {
   app.use("/api/movies", moviesRoute);
   app.use("/api/payment", paymentRoute);
   app.use("/api/orders", orderRoute);
+  app.use("/api/longevity", longevity);
   app.use(
     "/api-docs",
     swaggerUI.serve,

@@ -46,6 +46,7 @@ const orderSchema = new mongoose.Schema({
   },
   expiryDate: {
     type: Date,
+    default: moment().add(3, "months"),
   },
   longevity: {
     type: Number,
@@ -53,6 +54,10 @@ const orderSchema = new mongoose.Schema({
   startWatch: {
     type: Boolean,
     default: false,
+  },
+  movieExpiresOn: {
+    type: Date,
+    default: moment().add(3, "months"),
   },
 });
 

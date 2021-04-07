@@ -1,6 +1,7 @@
 {
     "zuluKey": "zuluKey",
     "db": "zulu_db",
-    "flutterwave": "FLWSECK_TEST-d0f6940575cdc47ab6a9558ebd3bf965-X"
+    "flutterwave": "FLWSECK_TEST-d0f6940575cdc47ab6a9558ebd3bf965-X",
+    "redirect_url": "https://zulucast.herokuapp.com/success"
   }
   

@@ -25,6 +25,11 @@ const authSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  profileURL: {
+    type: String,
+    default:
+      "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png",
+  },
 });
 
 authSchema.methods.generateToken = function () {
@@ -34,6 +39,7 @@ authSchema.methods.generateToken = function () {
       role: this.role,
       email: this.email,
       username: this.username,
+      profileURL: this.profileURL,
     },
     config.get("zuluKey")
   );

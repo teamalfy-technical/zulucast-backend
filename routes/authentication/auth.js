@@ -86,14 +86,14 @@ router.get("/", async (req, res) => {
   res.send(users);
 });
 
-router.get("/user/:id", isAuth, async (req, res) => {
+router.get("/user/:id", async (req, res) => {
   const user = await Auth.findOne({ email: req.params.id });
   if (!user) return res.status(404).send("No user found");
 
   res.send(user);
 });
 
-router.get("/end-users", isAuth, async (req, res) => {
+router.get("/end-users", async (req, res) => {
   const endUsers = await Auth.find({ role: "end user" });
   if (!endUsers) return res.status(404).send("No end user found");
 

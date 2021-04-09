@@ -53,7 +53,7 @@ router.post("/update", isAuth, async (req, res) => {
 //   res.send(order);
 // });
 
-router.get("/", async (req, res) => {
+router.get("/", isAuth, async (req, res) => {
   const order = await Orders.find({ email: req.userToken.email });
   if (!order) return res.status(404).send("No order found");
 

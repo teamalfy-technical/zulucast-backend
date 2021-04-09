@@ -136,6 +136,17 @@ router.post("/reset-password", isAuth, async (req, res) => {
   res.send("OK");
 });
 
+router.post("/update-username", isAuth, async (req, res) => {
+  const user = await Auth.findOne({
+    email: req.userToken.email,
+  });
+  if (!user) return res.status(404).send("invalid user");
+
+  user.username = req.body.username.trim();
+  await user.save();
+  res.send(user);
+});
+
 router.delete("/delete/:id", [isAuth, isAdmin], async (req, res) => {
   const userToDelete = await Auth.findById(req.params.id);
   if (!userToDelete) return res.status(404).send("User not found");

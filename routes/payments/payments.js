@@ -14,16 +14,16 @@ router.post("/", async (req, res) => {
   // amount, customerObj
   const body = {
     tx_ref: uuid(),
-    amount: req.body.amount,
+    amount: 100, //req.body.amount,
     currency: "USD",
-    redirect_url: "https://zulucast.herokuapp.com/success",
+    redirect_url: "google.com", //"https://zulucast.herokuapp.com/success",
     payment_options: "card",
     meta: {
       consumer_id: 23,
       consumer_mac: "92a3-912ba-1192a",
     },
     customer: {
-      email: req.body.email,
+      email: "sakho92iba@gmail.com", //req.body.email,
       phonenumber: "0205648089",
       name: "Yemi Desola",
     },

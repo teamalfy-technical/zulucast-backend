@@ -10,6 +10,10 @@ const movieLongevity = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  playOnHover: {
+    type: Boolean,
+    default: true,
+  },
   addedBy: {
     type: String,
   },

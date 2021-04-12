@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/", isAuth, async (req, res) => {
   const newLongevity = new Longevity({
     longevity: req.body.longevity,
+    playOnHover: req.body.playOnHover,
     addedBy: req.userToken.username,
   });
   await newLongevity.save();
@@ -20,7 +21,9 @@ router.get("/", async (req, res) => {
 
 router.put("/", isAuth, async (req, res) => {
   const obj = await Longevity.findOne();
-  (obj.longevity = req.body.longevity), (obj.addedBy = req.userToken.username);
+  obj.longevity = req.body.longevity;
+  obj.playOnHover = req.body.playOnHover;
+  obj.addedBy = req.userToken.username;
   await obj.save();
   res.send(obj);
 });

@@ -4,14 +4,24 @@ const { Longevity } = require("../../model/movies/movieLongevity");
 
 const router = express.Router();
 
-router.post("/", isAuth, async (req, res) => {
-  const newLongevity = new Longevity({
-    longevity: req.body.longevity,
-    playOnHover: req.body.playOnHover,
-    addedBy: req.userToken.username,
-  });
-  await newLongevity.save();
-  res.send(newLongevity);
+router.post("/", async (req, res) => {
+  const movieLongevity = await Longevity.findOne();
+  if (!movieLongevity) {
+    const newLongevity = new Longevity({
+      longevity: req.body.longevity,
+      playOnHover: req.body.playOnHover === "Yes, play on hover" ? true : false,
+      addedBy: "req.userToken.username",
+    });
+    await newLongevity.save();
+    res.send(newLongevity);
+  } else {
+    movieLongevity.longevity = req.body.longevity;
+    (movieLongevity.playOnHover =
+      req.body.playOnHover === "Yes, play on hover" ? true : false),
+      (movieLongevity.addedBy = "new user");
+    await movieLongevity.save();
+    res.send(movieLongevity);
+  }
 });
 
 router.get("/", async (req, res) => {

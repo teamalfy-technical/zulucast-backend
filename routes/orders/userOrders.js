@@ -60,6 +60,13 @@ router.get("/", isAuth, async (req, res) => {
   res.send(order);
 });
 
+router.get("/all-orders", async (req, res) => {
+  const order = await Orders.find();
+  if (!order) return res.status(404).send("No order found");
+
+  res.send(order);
+});
+
 // router.get("/", async (req, res) => {
 //   const orders = await Orders.find();
 //   if (!orders) return res.status(404).send("No order found");

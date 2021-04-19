@@ -21,12 +21,22 @@ const storage = new Storage({
 
 const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET_URL);
 
-router.post("/", [isAuth, isAdmin], async (req, res) => {
+//[isAuth, isAdmin]
+router.post("/", async (req, res) => {
   const { error } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const movie = await Movies.findOne({ title: req.body.title });
   if (movie) return res.status(400).send("Movie with this title already exist");
+
+  // check if is banner from the body is true,
+  // if it is then update the existing is banner to false,
+
+  if (req.body.isBanner) {
+    const obj = await Movies.findOne({ isBanner: true });
+    obj.isBanner = false;
+    await obj.save();
+  }
 
   const newMovie = new Movies({
     title: req.body.title,
@@ -97,9 +107,10 @@ router.delete("/delete/:id", [isAuth, isAdmin], async (req, res) => {
   res.send(movieToDelete);
 });
 
+//isAuth, isAdmin
 router.post(
   "/upload-movie-image",
-  [uploader.single("file"), isAuth, isAdmin],
+  [uploader.single("file")],
   async (req, res, next) => {
     if (!req.file) {
       return res.status(400).send("No file uploaded");

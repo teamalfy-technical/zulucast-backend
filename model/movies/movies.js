@@ -14,7 +14,6 @@ const movieSchema = new mongoose.Schema({
   },
   isBanner: {
     type: Boolean,
-    required: true,
     default: false,
   },
   price: {
@@ -31,13 +30,14 @@ const movieSchema = new mongoose.Schema({
   },
   duration: {
     type: String,
-    required: true,
+    default: "Not set",
   },
   releaseYear: {
     type: String,
   },
   releaseType: {
     type: String,
+    default: "New Release",
   },
   moviePictureURL: {
     type: String,
@@ -61,13 +61,13 @@ function validateMovie(movieObj) {
   const schema = Joi.object({
     title: Joi.string().min(3).max(255).required(),
     genre: Joi.string().required(),
-    isBanner: Joi.bool().required(),
+    isBanner: Joi.bool(),
     price: Joi.number().min(0).required(),
     description: Joi.string().min(3).required(),
     actor: Joi.string().min(3).max(255).required(),
-    duration: Joi.string().required(),
+    duration: Joi.string(),
     releaseYear: Joi.string().min(4).max(4),
-    releaseType: Joi.string().required(),
+    releaseType: Joi.string(),
     moviePictureURL: Joi.string().required(),
     movieTrailerURL: Joi.string().required(),
     movieVideoURL: Joi.string().required(),

@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
   if (!user) return res.status(400).send("Invalid email or password");
 
   const password = await unhash(req.body.password.trim(), user.password);
-  if (!password) return res.status(400).send("Invalid username or password");
+  if (!password) return res.status(400).send("Invalid email or password");
 
   const token = user.generateToken();
   res.header("x-auth-token", token).send(token);
@@ -75,8 +75,9 @@ router.post("/register-admin", async (req, res) => {
   });
 
   await newUser.save();
-  const token = newUser.generateToken();
-  res.header("x-auth-token", token).send(token);
+  // const token = newUser.generateToken();
+  // res.header("x-auth-token", token).send(token);
+  res.send(newUser);
 });
 
 router.get("/", async (req, res) => {
@@ -100,7 +101,7 @@ router.get("/end-users", async (req, res) => {
   res.send(endUsers);
 });
 
-router.get("/admins", isAuth, async (req, res) => {
+router.get("/admins", async (req, res) => {
   const admins = await Auth.find({ role: { $ne: "end user" } });
   if (!admins) return res.status(404).send("No admins found");
 

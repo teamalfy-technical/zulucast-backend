@@ -5,20 +5,21 @@ const { Genres, validateGenre } = require("../../model/movieGenres/genres");
 
 const router = express.Router();
 
-router.post("/", [isAuth, isAdmin], async (req, res) => {
+//[isAuth, isAdmin]
+router.post("/", async (req, res) => {
   const { error } = validateGenre(req.body);
   if (error) return res.status(404).send(error.details[0].message);
 
   const genre = await Genres.findOne({ name: req.body.name });
   if (genre) return res.status(404).send("Genre already exist");
 
-  const position = await Genres.findOne({
-    positionOnDashboard: req.body.positionOnDashboard,
-  });
-  if (position)
-    return res
-      .status(404)
-      .send("You already have a movie genre with this position on dashboard");
+  // const position = await Genres.findOne({
+  //   positionOnDashboard: req.body.positionOnDashboard,
+  // });
+  // if (position)
+  //   return res
+  //     .status(404)
+  //     .send("You already have a movie genre with this position on dashboard");
 
   const newGenre = new Genres({
     name: req.body.name,

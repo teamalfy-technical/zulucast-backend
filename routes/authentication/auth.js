@@ -6,10 +6,19 @@ const {
   validateUserRegistration,
   validateAdminRegistration,
 } = require("../../model/authentication/auth");
+const nodemailer = require("nodemailer");
 const isAuth = require("../../middleware/isAuth");
 const isAdmin = require("../../middleware/isAdmin");
 const multer = require("multer");
 const { Storage } = require("@google-cloud/storage");
+
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "teamalfy@gmail.com",
+    pass: "vluoweepmltsbnzs",
+  },
+});
 
 const router = express.Router();
 
@@ -63,7 +72,7 @@ router.post("/register", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
-  if (user) return res.status(400).send("Email already registered");
+  if (user) return res.status(400).send("Email already in use");
 
   const newUser = new Auth({
     role: "end user",
@@ -82,7 +91,7 @@ router.post("/register-admin", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
-  if (user) return res.status(400).send("Email already registered");
+  if (user) return res.status(400).send("Email already in use");
 
   const newUser = new Auth({
     role: req.body.role,
@@ -153,6 +162,34 @@ router.post("/reset-password", isAuth, async (req, res) => {
   await user.save();
   res.send("OK");
 });
+
+router.post("/forgot-password-mail", async (req, res) => {
+  var mailOptions = {
+    from: "Teamalfy",
+    to: "sakho92iba@gmail.com",
+    subject: "Zulucast",
+    html: `<p><h2>You have new purchase of product, kindly check your dashboard.</h2></p>`,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) console.log(error);
+    else console.log("Email sent: " + info.response);
+  });
+  res.send("OK");
+});
+
+// router.post("/forgot-password", async (req, res) => {
+//   const user = await Auth.findOne({
+//     email: req.body.email,
+//   });
+//   if (!user) return res.status(404).send("invalid email provided");
+//   const isPassword = await unhash(req.body.oldPassword.trim(), user.password);
+//   if (!isPassword) return res.status(404).send("Invalid password");
+
+//   user.password = await hash(req.body.password.trim());
+//   await user.save();
+//   res.send("OK");
+// });
 
 router.post("/update-username", isAuth, async (req, res) => {
   const user = await Auth.findOne({

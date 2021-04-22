@@ -41,6 +41,23 @@ router.post("/login", async (req, res) => {
   res.header("x-auth-token", token).send(token);
 });
 
+router.post("/login-admin", async (req, res) => {
+  const { error } = validateUserLogin(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const user = await Auth.findOne({ email: req.body.email.trim() });
+  if (!user) return res.status(400).send("Invalid email or password");
+
+  if (user.role === "end user")
+    return res.status(400).send("Invalid email or password");
+
+  const password = await unhash(req.body.password.trim(), user.password);
+  if (!password) return res.status(400).send("Invalid email or password");
+
+  const token = user.generateToken();
+  res.header("x-auth-token", token).send(token);
+});
+
 router.post("/register", async (req, res) => {
   const { error } = validateUserRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);

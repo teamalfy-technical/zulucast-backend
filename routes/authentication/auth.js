@@ -168,7 +168,7 @@ router.post("/forgot-password-mail", async (req, res) => {
     from: "Teamalfy",
     to: "sakho92iba@gmail.com",
     subject: "Zulucast",
-    html: `<p><h2>You have new purchase of product, kindly check your dashboard.</h2></p>`,
+    html: `<p><h2>Kindly click on the link bellow to reset your password.</h2></p>`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {

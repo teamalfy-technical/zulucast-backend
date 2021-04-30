@@ -43,6 +43,9 @@ router.post("/login", async (req, res) => {
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (!user) return res.status(400).send("Invalid email or password");
 
+  if (user.role === "admin" || user.role === "super admin")
+    return res.status(400).send("Invalid email or password");
+
   const password = await unhash(req.body.password.trim(), user.password);
   if (!password) return res.status(400).send("Invalid email or password");
 
@@ -134,7 +137,9 @@ router.get("/admins", async (req, res) => {
   res.send(admins);
 });
 
-router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
+//isAdmin
+
+router.put("/update/:id", [isAuth], async (req, res) => {
   const { error } = validateAdminRegistration(req.body);
   if (error) return res.status(404).send(error.details[0].message);
 
@@ -166,30 +171,30 @@ router.post("/reset-password", isAuth, async (req, res) => {
 router.post("/forgot-password-mail", async (req, res) => {
   var mailOptions = {
     from: "Teamalfy",
-    to: "sakho92iba@gmail.com",
+    to: req.body.email,
     subject: "Zulucast",
-    html: `<p><h2>Kindly click on the link bellow to reset your password.</h2></p>`,
+    html: `<section><p><h2 style="color: grey;">Kindly click on the button bellow to reset your password.</h2></p><br/><hr/><br/><button style="background-color: #A6226C; border: none; color: white; padding: 15px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; border-radius: 8px;"><a href="https://zulucast.herokuapp.com/modify-password/${req.body.email}" style="color: white; text-decoration: none;" >Reset Password<a/><button><section/>`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) console.log(error);
-    else console.log("Email sent: " + info.response);
+    else console.log("Email sent: " + req.body.email);
   });
   res.send("OK");
 });
 
-// router.post("/forgot-password", async (req, res) => {
-//   const user = await Auth.findOne({
-//     email: req.body.email,
-//   });
-//   if (!user) return res.status(404).send("invalid email provided");
-//   const isPassword = await unhash(req.body.oldPassword.trim(), user.password);
-//   if (!isPassword) return res.status(404).send("Invalid password");
+router.post("/modify-password", async (req, res) => {
+  const user = await Auth.findOne({
+    email: req.body.email.trim(),
+  });
+  if (!user) return res.status(404).send("invalid email provided");
+  // const isPassword = await unhash(req.body.oldPassword.trim(), user.password);
+  // if (!isPassword) return res.status(404).send("Invalid password");
 
-//   user.password = await hash(req.body.password.trim());
-//   await user.save();
-//   res.send("OK");
-// });
+  user.password = await hash(req.body.password.trim());
+  await user.save();
+  res.send("OK");
+});
 
 router.post("/update-username", isAuth, async (req, res) => {
   const user = await Auth.findOne({
@@ -202,7 +207,8 @@ router.post("/update-username", isAuth, async (req, res) => {
   res.send(user);
 });
 
-router.delete("/delete/:id", [isAuth, isAdmin], async (req, res) => {
+//isAdmin
+router.delete("/delete/:id", [isAuth], async (req, res) => {
   const userToDelete = await Auth.findById(req.params.id);
   if (!userToDelete) return res.status(404).send("User not found");
   const deleteUser = await Auth.findByIdAndRemove(req.params.id);

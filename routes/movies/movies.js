@@ -92,14 +92,15 @@ router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
   res.send(updateMovie);
 });
 
-router.post("/u", async (req, res) => {
-  const m = await Movies.findOne();
-  m.movieVideoURL = "";
-  await m.save();
-  res.send(m);
-});
+// router.post("/u", async (req, res) => {
+//   const m = await Movies.findOne();
+//   m.movieVideoURL = "";
+//   await m.save();
+//   res.send(m);
+// });
 
-router.delete("/delete/:id", [isAuth, isAdmin], async (req, res) => {
+//, isAdmin
+router.delete("/delete/:id", [isAuth], async (req, res) => {
   const movie = await Movies.findById(req.params.id);
   if (!movie) return res.status(404).send("No movie found");
 

@@ -56,7 +56,8 @@ router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
   res.send(updateGenre);
 });
 
-router.delete("/delete/:id", [isAuth, isAdmin], async (req, res) => {
+//, isAdmin
+router.delete("/delete/:id", [isAuth], async (req, res) => {
   const genre = await Genres.findById(req.params.id);
   if (!genre) return res.status(404).send("No genre found");
 

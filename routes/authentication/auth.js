@@ -170,7 +170,7 @@ router.post("/reset-password", isAuth, async (req, res) => {
 
 router.post("/forgot-password-mail", async (req, res) => {
   var mailOptions = {
-    from: "Teamalfy",
+    from: "teamalfy@gmail.com",
     to: req.body.email,
     subject: "Zulucast",
     html: `<section><p><h2 style="color: grey;">Kindly click on the button bellow to reset your password.</h2></p><br/><hr/><br/><button style="background-color: #A6226C; border: none; color: white; padding: 15px 24px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; border-radius: 8px;"><a href="https://zulucast.herokuapp.com/modify-password/${req.body.email}" style="color: white; text-decoration: none;" >Reset Password<a/><button><section/>`,

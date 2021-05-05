@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
     tx_ref: uuid(),
     amount: req.body.amount,
     currency: "USD",
-    redirect_url: config.get("redirect_url"),
+    redirect_url: "https://zulucast.herokuapp.com/success",
     payment_options: "card",
     meta: {
       consumer_id: 23,

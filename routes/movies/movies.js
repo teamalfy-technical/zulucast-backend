@@ -4,15 +4,28 @@ const isAuth = require("../../middleware/isAuth");
 const isAdmin = require("../../middleware/isAdmin");
 const { Storage } = require("@google-cloud/storage");
 const { Movies, validateMovie } = require("../../model/movies/movies");
+const AWS = require("aws-sdk");
+const config = require("config");
+const { v4: uuid } = require("uuid");
 
 const router = express.Router();
 
+//set up an s3
+const s3 = new AWS.S3({
+  accessKeyId: config.get("ID"),
+  secretAccessKey: config.get("secret"),
+  httpOptions: { timeout: 10 * 60 * 1000 },
+});
+
+//set up multer
 const uploader = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
+    fileSize: 50000 * 1024 * 1024, // keep images size < 5 MB
   },
 });
+
+var options = { partSize: 5 * 1024 * 1024, queueSize: 10 };
 
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT_ID,
@@ -144,5 +157,27 @@ router.post(
     blobWriter.end(req.file.buffer);
   }
 );
+
+router.post("/upload-video", [uploader.single("video")], async (req, res) => {
+  let myFile = req.file.originalname.split(".");
+  const fileType = myFile[myFile.length - 1];
+
+  //var readStream = fs.createReadStream(req.file.originalname);
+
+  const params = {
+    Bucket: config.get("bucket_name"),
+    Key: `${uuid()}.${fileType}`,
+    Body: req.file.buffer,
+  };
+
+  s3.upload(params, options, (err, data) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).send(data);
+  }).on("httpUploadProgress", (evt) => {
+    console.log(
+      "Completed " + ((evt.loaded * 100) / evt.total).toFixed() + "% of upload"
+    );
+  });
+});
 
 module.exports = router;

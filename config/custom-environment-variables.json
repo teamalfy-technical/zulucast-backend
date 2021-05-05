@@ -2,6 +2,9 @@
     "zuluKey": "zuluKey",
     "db": "zulu_db",
     "flutterwave": "FLWSECK_TEST-da8982749940be340f6821198f98b581-X",
-    "redirect_url": "https://zulucast.herokuapp.com/success"
+    "redirect_url": "https://zulucast.herokuapp.com/success",
+    "ID": "AKIA3RI7ANHPDINWKCV7",
+    "secret": "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",
+    "bucket_name": "bucibrftma"
   }
   

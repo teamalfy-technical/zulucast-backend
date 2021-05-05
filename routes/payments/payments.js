@@ -12,9 +12,10 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   // amount, customerObj
+  const { amount, email, username } = req.body;
   const body = {
     tx_ref: uuid(),
-    amount: req.body.amount,
+    amount,
     currency: "USD",
     redirect_url: "https://zulucast.herokuapp.com/success",
     payment_options: "card",
@@ -23,9 +24,9 @@ router.post("/", async (req, res) => {
       consumer_mac: "92a3-912ba-1192a",
     },
     customer: {
-      email: req.body.email,
+      email,
       phonenumber: "0205648089",
-      name: "Yemi Desola",
+      name: username,
     },
     customizations: {
       title: "ZuluCast Payment",

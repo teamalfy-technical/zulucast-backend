@@ -123,6 +123,15 @@ router.get("/user/:id", async (req, res) => {
   res.send(user);
 });
 
+router.get("/one-user/:id", async (req, res) => {
+  const user = await Auth.findById(req.params.id).select(
+    "-profileURL -role -__v -registrationDate -password"
+  );
+  if (!user) return res.status(404).send("No user found");
+
+  res.send(user);
+});
+
 router.get("/end-users", async (req, res) => {
   const endUsers = await Auth.find({ role: "end user" });
   if (!endUsers) return res.status(404).send("No end user found");
@@ -151,6 +160,20 @@ router.put("/update/:id", [isAuth], async (req, res) => {
     email: req.body.email,
     username: req.body.username,
     password: await hash(req.body.password.trim()),
+  });
+  res.send(updatedUser);
+});
+
+router.put("/admin-update/:id", [isAuth], async (req, res) => {
+  // const { error } = validateAdminRegistration(req.body);
+  // if (error) return res.status(404).send(error.details[0].message);
+
+  const isUser = await Auth.findById(req.params.id);
+  if (!isUser) return res.status(404).send("User not found");
+
+  const updatedUser = await Auth.findByIdAndUpdate(req.params.id, {
+    email: req.body.email,
+    username: req.body.username,
   });
   res.send(updatedUser);
 });

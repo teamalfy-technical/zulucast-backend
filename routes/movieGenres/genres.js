@@ -38,13 +38,16 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const genre = await Genres.findById(req.params.id);
+  const genre = await Genres.findById(req.params.id).select(
+    "-creationDate -__v"
+  );
   if (!genre) return res.status(404).send("No genre found");
 
   res.send(genre);
 });
 
-router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
+//isAdmin
+router.put("/update/:id", [isAuth], async (req, res) => {
   const genre = await Genres.findById(req.params.id);
   if (!genre) return res.status(404).send("No genre found");
 

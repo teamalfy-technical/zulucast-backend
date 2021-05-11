@@ -78,13 +78,16 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const movie = await Movies.findById(req.params.id);
+  const movie = await Movies.findById(req.params.id).select(
+    "-uploadDate -__v -moviePictureURL -movieTrailerURL -movieVideoURL"
+  );
   if (!movie) return res.status(404).send("No movie found");
 
   res.send(movie);
 });
 
-router.put("/update/:id", [isAuth, isAdmin], async (req, res) => {
+//isAdmin
+router.put("/update/:id", [isAuth], async (req, res) => {
   const movie = await Movies.findById(req.params.id);
   if (!movie) return res.status(404).send("No movie found");
 

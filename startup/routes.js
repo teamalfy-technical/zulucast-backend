@@ -11,6 +11,8 @@ const moviesRoute = require("../routes/movies/movies");
 const paymentRoute = require("../routes/payments/payments");
 const orderRoute = require("../routes/orders/userOrders");
 const longevity = require("../routes/movies/movieLongevity");
+const admin = require("../routes/permission/admin");
+const superAdmin = require("../routes/permission/superAdmin");
 
 module.exports = function (app) {
   app.use(express.json());
@@ -22,6 +24,8 @@ module.exports = function (app) {
   app.use("/api/payment", paymentRoute);
   app.use("/api/orders", orderRoute);
   app.use("/api/longevity", longevity);
+  app.use("/api/admin", admin);
+  app.use("/api/super-admin", superAdmin);
   app.use(
     "/api-docs",
     swaggerUI.serve,

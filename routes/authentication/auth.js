@@ -11,6 +11,8 @@ const isAuth = require("../../middleware/isAuth");
 const isAdmin = require("../../middleware/isAdmin");
 const multer = require("multer");
 const { Storage } = require("@google-cloud/storage");
+const { AdminAccess } = require("../../model/permission/admin");
+const { SuperAdminAccess } = require("../../model/permission/superAdmin");
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
@@ -70,9 +72,17 @@ router.post("/login-admin", async (req, res) => {
   res.header("x-auth-token", token).send(token);
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", isAuth, async (req, res) => {
   const { error } = validateUserRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+
+  const access = await AdminAccess.findOne();
+  if (!access.addCustomer && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access to add customer");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.addCustomer && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access to add customer");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (user) return res.status(400).send("Email already in use");
@@ -89,9 +99,17 @@ router.post("/register", async (req, res) => {
   res.header("x-auth-token", token).send(token);
 });
 
-router.post("/register-admin", async (req, res) => {
+router.post("/register-admin", isAuth, async (req, res) => {
   const { error } = validateAdminRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+
+  const access = await AdminAccess.findOne();
+  if (!access.addAdmin && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access add admin");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.addAdmin && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access add admin");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (user) return res.status(400).send("Email already in use");
@@ -149,17 +167,23 @@ router.get("/admins", async (req, res) => {
 //isAdmin
 
 router.put("/update/:id", [isAuth], async (req, res) => {
-  const { error } = validateAdminRegistration(req.body);
-  if (error) return res.status(404).send(error.details[0].message);
+  // const { error } = validateAdminRegistration(req.body);
+  // if (error) return res.status(400).send(error.details[0].message);
+
+  const access = await AdminAccess.findOne();
+  if (!access.updateCustomer && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access to update user");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateCustomer && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access to update user");
 
   const isUser = await Auth.findById(req.params.id);
-  if (!isUser) return res.status(404).send("User not found");
+  if (!isUser) return res.status(400).send("User not found");
 
   const updatedUser = await Auth.findByIdAndUpdate(req.params.id, {
-    role: req.body.role,
     email: req.body.email,
     username: req.body.username,
-    password: await hash(req.body.password.trim()),
   });
   res.send(updatedUser);
 });
@@ -168,11 +192,20 @@ router.put("/admin-update/:id", [isAuth], async (req, res) => {
   // const { error } = validateAdminRegistration(req.body);
   // if (error) return res.status(404).send(error.details[0].message);
 
+  const access = await AdminAccess.findOne();
+  if (!access.updateAdmin && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access to update admin details");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateAdmin && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access to update admin details");
+
   const isUser = await Auth.findById(req.params.id);
-  if (!isUser) return res.status(404).send("User not found");
+  if (!isUser) return res.status(400).send("User not found");
 
   const updatedUser = await Auth.findByIdAndUpdate(req.params.id, {
     email: req.body.email,
+    role: req.body.role,
     username: req.body.username,
   });
   res.send(updatedUser);
@@ -232,6 +265,14 @@ router.post("/update-username", isAuth, async (req, res) => {
 
 //isAdmin
 router.delete("/delete/:id", [isAuth], async (req, res) => {
+  const access = await AdminAccess.findOne();
+  if (!access.updateCustomer && req.userToken.role === "admin")
+    return res.status(404).send("You dont have access to delete customer");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateCustomer && req.userToken.role === "super admin")
+    return res.status(404).send("You dont have access to delete customer");
+
   const userToDelete = await Auth.findById(req.params.id);
   if (!userToDelete) return res.status(404).send("User not found");
   const deleteUser = await Auth.findByIdAndRemove(req.params.id);

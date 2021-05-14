@@ -2,24 +2,26 @@ const express = require("express");
 const isAuth = require("../../middleware/isAuth");
 const isAdmin = require("../../middleware/isAdmin");
 const { Genres, validateGenre } = require("../../model/movieGenres/genres");
+const { AdminAccess } = require("../../model/permission/admin");
+const { SuperAdminAccess } = require("../../model/permission/superAdmin");
 
 const router = express.Router();
 
 //[isAuth, isAdmin]
-router.post("/", async (req, res) => {
+router.post("/", isAuth, async (req, res) => {
   const { error } = validateGenre(req.body);
   if (error) return res.status(404).send(error.details[0].message);
 
+  const access = await AdminAccess.findOne();
+  if (!access.addGenre && req.userToken.role === "admin")
+    return res.status(404).send("You dont have access to delete genre");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.addGenre && req.userToken.role === "super admin")
+    return res.status(404).send("You dont have access to delete genre");
+
   const genre = await Genres.findOne({ name: req.body.name });
   if (genre) return res.status(404).send("Genre already exist");
-
-  // const position = await Genres.findOne({
-  //   positionOnDashboard: req.body.positionOnDashboard,
-  // });
-  // if (position)
-  //   return res
-  //     .status(404)
-  //     .send("You already have a movie genre with this position on dashboard");
 
   const newGenre = new Genres({
     name: req.body.name,
@@ -51,6 +53,14 @@ router.put("/update/:id", [isAuth], async (req, res) => {
   const genre = await Genres.findById(req.params.id);
   if (!genre) return res.status(404).send("No genre found");
 
+  const access = await AdminAccess.findOne();
+  if (!access.updateGenre && req.userToken.role === "admin")
+    return res.status(404).send("You dont have access to delete genre");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateGenre && req.userToken.role === "super admin")
+    return res.status(404).send("You dont have access to delete genre");
+
   const updateGenre = await Genres.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     description: req.body.description,
@@ -61,6 +71,14 @@ router.put("/update/:id", [isAuth], async (req, res) => {
 
 //, isAdmin
 router.delete("/delete/:id", [isAuth], async (req, res) => {
+  const access = await AdminAccess.findOne();
+  if (!access.updateGenre && req.userToken.role === "admin")
+    return res.status(404).send("You dont have access to delete genre");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateGenre && req.userToken.role === "super admin")
+    return res.status(404).send("You dont have access to delete genre");
+
   const genre = await Genres.findById(req.params.id);
   if (!genre) return res.status(404).send("No genre found");
 

@@ -4,6 +4,8 @@ const isAuth = require("../../middleware/isAuth");
 const isAdmin = require("../../middleware/isAdmin");
 const { Storage } = require("@google-cloud/storage");
 const { Movies, validateMovie } = require("../../model/movies/movies");
+const { AdminAccess } = require("../../model/permission/admin");
+const { SuperAdminAccess } = require("../../model/permission/superAdmin");
 const AWS = require("aws-sdk");
 const config = require("config");
 const { v4: uuid } = require("uuid");
@@ -91,6 +93,14 @@ router.put("/update/:id", [isAuth], async (req, res) => {
   const movie = await Movies.findById(req.params.id);
   if (!movie) return res.status(404).send("No movie found");
 
+  const access = await AdminAccess.findOne();
+  if (!access.updateMovie && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access to update movie");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateMovie && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access to update movie");
+
   const updateMovie = await Movies.findByIdAndUpdate(req.params.id, {
     title: req.body.title,
     genre: req.body.genre,
@@ -117,8 +127,16 @@ router.put("/update/:id", [isAuth], async (req, res) => {
 
 //, isAdmin
 router.delete("/delete/:id", [isAuth], async (req, res) => {
+  const access = await AdminAccess.findOne();
+  if (!access.updateMovie && req.userToken.role === "admin")
+    return res.status(400).send("You dont have access to delete movie");
+
+  const access2 = await SuperAdminAccess.findOne();
+  if (!access2.updateMovie && req.userToken.role === "super admin")
+    return res.status(400).send("You dont have access to delete movie");
+
   const movie = await Movies.findById(req.params.id);
-  if (!movie) return res.status(404).send("No movie found");
+  if (!movie) return res.status(400).send("No movie found");
 
   const movieToDelete = await Movies.findByIdAndDelete(req.params.id);
   res.send(movieToDelete);
@@ -127,11 +145,19 @@ router.delete("/delete/:id", [isAuth], async (req, res) => {
 //isAuth, isAdmin
 router.post(
   "/upload-movie-image",
-  [uploader.single("file")],
+  [uploader.single("file"), isAuth],
   async (req, res, next) => {
     if (!req.file) {
       return res.status(400).send("No file uploaded");
     }
+
+    const access = await AdminAccess.findOne();
+    if (!access.addMovie && req.userToken.role === "admin")
+      return res.status(400).send("You dont have access to add movie");
+
+    const access2 = await SuperAdminAccess.findOne();
+    if (!access2.addMovie && req.userToken.role === "super admin")
+      return res.status(400).send("You dont have access to add movie");
 
     // Create new blob in the bucket referencing the file
     const blob = bucket.file(req.file.originalname);

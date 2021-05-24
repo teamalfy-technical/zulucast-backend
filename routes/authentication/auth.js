@@ -104,7 +104,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).send("You dont have access to add customer");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
-  if (user) return res.status(400).send("Email already in use");
+  if (user) return res.status(400).send("Email is already in use");
 
   const newUser = new Auth({
     role: "end user",

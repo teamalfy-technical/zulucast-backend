@@ -69,9 +69,9 @@ router.post("/mobile/login", async (req, res) => {
   const password = await unhash(req.body.password.trim(), user.password);
   if (!password) return res.status(400).send("Invalid email or password");
 
-  const token = user.generateToken();
+  // const token = user.generateToken();
   // res.header("x-auth-token", token).send(token);
-  res.send({ ...user, token });
+  res.send(user);
 });
 
 router.post("/login-admin", async (req, res) => {

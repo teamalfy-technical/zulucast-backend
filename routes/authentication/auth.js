@@ -95,13 +95,13 @@ router.post("/register", async (req, res) => {
   const { error } = validateUserRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const access = await AdminAccess.findOne();
-  if (!access.addCustomer && req.userToken.role === "admin")
-    return res.status(400).send("You dont have access to add customer");
+  // const access = await AdminAccess.findOne();
+  // if (!access.addCustomer && req.userToken.role === "admin")
+  //   return res.status(400).send("You dont have access to add customer");
 
-  const access2 = await SuperAdminAccess.findOne();
-  if (!access2.addCustomer && req.userToken.role === "super admin")
-    return res.status(400).send("You dont have access to add customer");
+  // const access2 = await SuperAdminAccess.findOne();
+  // if (!access2.addCustomer && req.userToken.role === "super admin")
+  //   return res.status(400).send("You dont have access to add customer");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (user) return res.status(400).send("Email is already in use");
@@ -123,13 +123,13 @@ router.post("/mobile/register", async (req, res) => {
   const { error } = validateUserRegistration(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const access = await AdminAccess.findOne();
-  if (!access.addCustomer && req.userToken.role === "admin")
-    return res.status(400).send("You dont have access to add customer");
+  // const access = await AdminAccess.findOne();
+  // if (!access.addCustomer && req.userToken.role === "admin")
+  //   return res.status(400).send("You dont have access to add customer");
 
-  const access2 = await SuperAdminAccess.findOne();
-  if (!access2.addCustomer && req.userToken.role === "super admin")
-    return res.status(400).send("You dont have access to add customer");
+  // const access2 = await SuperAdminAccess.findOne();
+  // if (!access2.addCustomer && req.userToken.role === "super admin")
+  //   return res.status(400).send("You dont have access to add customer");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (user) return res.status(400).send("Email already in use");

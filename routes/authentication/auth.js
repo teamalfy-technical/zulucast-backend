@@ -153,11 +153,11 @@ router.post("/register-admin", isAuth, async (req, res) => {
 
   const access = await AdminAccess.findOne();
   if (!access.addAdmin && req.userToken.role === "admin")
-    return res.status(400).send("You dont have access add admin");
+    return res.status(400).send("You dont have access to add admin");
 
   const access2 = await SuperAdminAccess.findOne();
   if (!access2.addAdmin && req.userToken.role === "super admin")
-    return res.status(400).send("You dont have access add admin");
+    return res.status(400).send("You dont have access to add admin");
 
   const user = await Auth.findOne({ email: req.body.email.trim() });
   if (user) return res.status(400).send("Email already in use");
@@ -315,11 +315,11 @@ router.post("/update-username", isAuth, async (req, res) => {
 router.delete("/delete/:id", [isAuth], async (req, res) => {
   const access = await AdminAccess.findOne();
   if (!access.updateCustomer && req.userToken.role === "admin")
-    return res.status(404).send("You dont have access to delete customer");
+    return res.status(404).send("You dont have access to delete user");
 
   const access2 = await SuperAdminAccess.findOne();
   if (!access2.updateCustomer && req.userToken.role === "super admin")
-    return res.status(404).send("You dont have access to delete customer");
+    return res.status(404).send("You dont have access to delete user");
 
   const userToDelete = await Auth.findById(req.params.id);
   if (!userToDelete) return res.status(404).send("User not found");

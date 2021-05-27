@@ -10,6 +10,7 @@ const releaseTypeRoute = require("../routes/movieReleaseTypes/releaseTypes");
 const moviesRoute = require("../routes/movies/movies");
 const paymentRoute = require("../routes/payments/payments");
 const orderRoute = require("../routes/orders/userOrders");
+const orderMobileRoute = require("../routes/orders/userMobileOrder");
 const longevity = require("../routes/movies/movieLongevity");
 const admin = require("../routes/permission/admin");
 const superAdmin = require("../routes/permission/superAdmin");
@@ -23,6 +24,7 @@ module.exports = function (app) {
   app.use("/api/movies", moviesRoute);
   app.use("/api/payment", paymentRoute);
   app.use("/api/orders", orderRoute);
+  app.use("/api/orders/mobile", orderMobileRoute);
   app.use("/api/longevity", longevity);
   app.use("/api/admin", admin);
   app.use("/api/super-admin", superAdmin);

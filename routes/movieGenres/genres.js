@@ -14,11 +14,11 @@ router.post("/", isAuth, async (req, res) => {
 
   const access = await AdminAccess.findOne();
   if (!access.addGenre && req.userToken.role === "admin")
-    return res.status(404).send("You dont have access to delete genre");
+    return res.status(404).send("You dont have access to add new genre");
 
   const access2 = await SuperAdminAccess.findOne();
   if (!access2.addGenre && req.userToken.role === "super admin")
-    return res.status(404).send("You dont have access to delete genre");
+    return res.status(404).send("You dont have access to add new genre");
 
   const genre = await Genres.findOne({ name: req.body.name });
   if (genre) return res.status(404).send("Genre already exist");
@@ -55,11 +55,11 @@ router.put("/update/:id", [isAuth], async (req, res) => {
 
   const access = await AdminAccess.findOne();
   if (!access.updateGenre && req.userToken.role === "admin")
-    return res.status(404).send("You dont have access to delete genre");
+    return res.status(404).send("You dont have access to update genre");
 
   const access2 = await SuperAdminAccess.findOne();
   if (!access2.updateGenre && req.userToken.role === "super admin")
-    return res.status(404).send("You dont have access to delete genre");
+    return res.status(404).send("You dont have access to update genre");
 
   const updateGenre = await Genres.findByIdAndUpdate(req.params.id, {
     name: req.body.name,

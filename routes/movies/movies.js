@@ -49,8 +49,10 @@ router.post("/", async (req, res) => {
 
   if (req.body.isBanner) {
     const obj = await Movies.findOne({ isBanner: true });
-    obj.isBanner = false;
-    await obj.save();
+    if (obj) {
+      obj.isBanner = false;
+      await obj.save();
+    }
   }
 
   const newMovie = new Movies({

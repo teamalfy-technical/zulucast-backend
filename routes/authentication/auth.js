@@ -398,6 +398,7 @@ router.post(
 
       // Return the file name and its public URL
       user.profileURL = publicUrl;
+      user.username = req.body.username;
       await user.save();
       res
         .status(200)

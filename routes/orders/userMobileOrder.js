@@ -6,7 +6,7 @@ const { Orders } = require("../../model/orders/userOrders");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
   const order = await Orders.find({ email: req.body.email });
   if (!order) return res.status(404).send("No order found");
 

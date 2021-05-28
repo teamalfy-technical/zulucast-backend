@@ -376,7 +376,7 @@ router.post(
       return res.status(400).send("No file uploaded");
     }
 
-    let user = await Auth.findOne({ email: "alpha@gmail.com" });
+    let user = await Auth.findOne({ email: req.body.email });
 
     // Create new blob in the bucket referencing the file
     const blob = bucket.file(req.file.originalname);

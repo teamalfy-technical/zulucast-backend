@@ -311,6 +311,17 @@ router.post("/update-username", isAuth, async (req, res) => {
   res.send(user);
 });
 
+router.post("/update-username-mobile", async (req, res) => {
+  const user = await Auth.findOne({
+    email: req.body.email,
+  });
+  if (!user) return res.status(404).send("invalid user");
+
+  user.username = req.body.username.trim();
+  await user.save();
+  res.send(user);
+});
+
 //isAdmin
 router.delete("/delete/:id", [isAuth], async (req, res) => {
   const access = await AdminAccess.findOne();
@@ -400,9 +411,7 @@ router.post(
       user.profileURL = publicUrl;
       user.username = req.body.username;
       await user.save();
-      res
-        .status(200)
-        .send({ fileName: req.file.originalname, fileLocation: publicUrl });
+      res.status(200).send(user);
     });
 
     // When there is no more data to be consumed from the stream

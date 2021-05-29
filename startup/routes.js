@@ -8,6 +8,7 @@ const authRoute = require("../routes/authentication/auth");
 const genresRoute = require("../routes/movieGenres/genres");
 const releaseTypeRoute = require("../routes/movieReleaseTypes/releaseTypes");
 const moviesRoute = require("../routes/movies/movies");
+const moviesMobileRoute = require("../routes/movies/movies_mobile");
 const paymentRoute = require("../routes/payments/payments");
 const orderRoute = require("../routes/orders/userOrders");
 const orderMobileRoute = require("../routes/orders/userMobileOrder");
@@ -22,6 +23,7 @@ module.exports = function (app) {
   app.use("/api/genre", genresRoute);
   app.use("/api/release", releaseTypeRoute);
   app.use("/api/movies", moviesRoute);
+  app.use("/api/movies-mobile", moviesMobileRoute);
   app.use("/api/payment", paymentRoute);
   app.use("/api/orders", orderRoute);
   app.use("/api/orders/mobile", orderMobileRoute);

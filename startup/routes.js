@@ -11,6 +11,7 @@ const moviesRoute = require("../routes/movies/movies");
 const moviesMobileRoute = require("../routes/movies/movies_mobile");
 const paymentRoute = require("../routes/payments/payments");
 const orderRoute = require("../routes/orders/userOrders");
+const preOrderRoute = require("../routes/orders/preOrder");
 const orderMobileRoute = require("../routes/orders/userMobileOrder");
 const longevity = require("../routes/movies/movieLongevity");
 const admin = require("../routes/permission/admin");
@@ -26,6 +27,7 @@ module.exports = function (app) {
   app.use("/api/movies-mobile", moviesMobileRoute);
   app.use("/api/payment", paymentRoute);
   app.use("/api/orders", orderRoute);
+  app.use("/api/pre-orders", preOrderRoute);
   app.use("/api/orders/mobile", orderMobileRoute);
   app.use("/api/longevity", longevity);
   app.use("/api/admin", admin);

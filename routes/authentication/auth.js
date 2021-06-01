@@ -327,10 +327,14 @@ router.delete("/delete/:id", [isAuth], async (req, res) => {
   const access = await AdminAccess.findOne();
   if (!access.updateCustomer && req.userToken.role === "admin")
     return res.status(404).send("You dont have access to delete user");
+  if (!access.updateAdmin && req.userToken.role === "admin")
+    return res.status(404).send("You dont have access to delete admin user");
 
   const access2 = await SuperAdminAccess.findOne();
   if (!access2.updateCustomer && req.userToken.role === "super admin")
     return res.status(404).send("You dont have access to delete user");
+  if (!access2.updateAdmin && req.userToken.role === "super admin")
+    return res.status(404).send("You dont have access to delete admin user");
 
   const userToDelete = await Auth.findById(req.params.id);
   if (!userToDelete) return res.status(404).send("User not found");

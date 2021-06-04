@@ -54,14 +54,16 @@ router.post("/update", isAuth, async (req, res) => {
 // });
 
 router.get("/", isAuth, async (req, res) => {
-  const order = await Orders.find({ email: req.userToken.email });
+  const order = await Orders.find({
+    $and: [{ email: req.userToken.email }, { paid: true }],
+  });
   if (!order) return res.status(404).send("No order found");
 
   res.send(order);
 });
 
 router.get("/all-orders", async (req, res) => {
-  const order = await Orders.find();
+  const order = await Orders.find({ paid: true });
   if (!order) return res.status(404).send("No order found");
 
   res.send(order);
@@ -74,13 +76,28 @@ router.get("/all-orders", async (req, res) => {
 //   res.send(orders);
 // });
 
-router.delete("/delete/:id", async (req, res) => {
-  const movie = await LoggedOutCart.find({ userID: req.params.id });
-  if (!movie) return res.status(404).send("No movie found");
-
-  const movieToDelete = await LoggedOutCart.find({ userID: req.params.id });
-  for (let i = 0; i < movieToDelete.length; i++) movieToDelete[i].remove();
-  res.send(movieToDelete);
+router.post("/paid", isAuth, async (req, res) => {
+  const updatedOrder = await Orders.updateMany(
+    { email: req.userToken.email },
+    { $set: { paid: true } }
+  );
+  res.send(updatedOrder);
 });
+
+router.delete("/remove", isAuth, async (req, res) => {
+  const notPurchased = await Orders.deleteMany({
+    $and: [{ email: req.userToken.email }, { paid: false }],
+  });
+  res.send(notPurchased);
+});
+
+// router.delete("/delete/:id", async (req, res) => {
+//   const movie = await LoggedOutCart.find({ userID: req.params.id });
+//   if (!movie) return res.status(404).send("No movie found");
+
+//   const movieToDelete = await LoggedOutCart.find({ userID: req.params.id });
+//   for (let i = 0; i < movieToDelete.length; i++) movieToDelete[i].remove();
+//   res.send(movieToDelete);
+// });
 
 module.exports = router;

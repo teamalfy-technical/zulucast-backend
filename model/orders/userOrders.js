@@ -59,6 +59,10 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: moment().add(3, "months"),
   },
+  paid: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 function validateOrder(userObj) {

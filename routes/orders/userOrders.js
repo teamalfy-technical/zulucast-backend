@@ -69,6 +69,11 @@ router.get("/all-orders", async (req, res) => {
   res.send(order);
 });
 
+router.get("/get", async (req, res) => {
+  const d = await Orders.updateMany({ $set: { paid: true } });
+  res.send(d);
+});
+
 // router.get("/", async (req, res) => {
 //   const orders = await Orders.find();
 //   if (!orders) return res.status(404).send("No order found");

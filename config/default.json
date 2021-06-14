@@ -1,7 +1,7 @@
 {
     "zuluKey": "zuluKey",
     "db": "mongodb://localhost/zulu",
-    "flutterwave_key": "FLWSECK_TEST-da8982749940be340f6821198f98b581-X",
+    "flutterwave_key": "FLWSECK-bc07f0e1daed86b484bd4dd977117e22-X",
     "redirect_url": "http://localhost:3002/success",
     "ID": "AKIA2EGLOYP3DJ2FWZUO",
     "secret": "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",

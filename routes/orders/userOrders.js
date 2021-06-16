@@ -35,6 +35,30 @@ router.post("/", isAuth, async (req, res) => {
   res.send(order);
 });
 
+router.post("/mobile-order", async (req, res) => {
+  // const { error } = validateOrder(req.body);
+  // if (error) return res.status(400).send(error.details[0].message);
+
+  const obj = await Longevity.findOne();
+
+  const order = new Orders({
+    username: req.body.username,
+    email: req.body.email,
+    title: req.body.title,
+    price: req.body.price,
+    description: req.body.description,
+    actor: req.body.actor,
+    duration: req.body.duration,
+    moviePictureURL: req.body.moviePictureURL,
+    movieVideoURL: req.body.movieVideoURL,
+    longevity: obj.longevity,
+    //expiryDate: moment().add(7, "days"),
+  });
+
+  await order.save();
+  res.send(order);
+});
+
 router.post("/update", isAuth, async (req, res) => {
   const order = await Orders.findById(req.body._id);
 

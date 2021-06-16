@@ -120,6 +120,21 @@ router.delete("/remove", isAuth, async (req, res) => {
   res.send(notPurchased);
 });
 
+router.post("/mobile-paid", async (req, res) => {
+  const updatedOrder = await Orders.updateMany(
+    { email: req.body.email },
+    { $set: { paid: true } }
+  );
+  res.send(updatedOrder);
+});
+
+router.delete("/mobile-remove", async (req, res) => {
+  const notPurchased = await Orders.deleteMany({
+    $and: [{ email: req.body.email }, { paid: false }],
+  });
+  res.send(notPurchased);
+});
+
 // router.delete("/delete/:id", async (req, res) => {
 //   const movie = await LoggedOutCart.find({ userID: req.params.id });
 //   if (!movie) return res.status(404).send("No movie found");

@@ -7,7 +7,9 @@ const { Orders } = require("../../model/orders/userOrders");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const order = await Orders.find({ email: req.body.email });
+  const order = await Orders.find({
+    $and: [{ email: req.body.email }, { paid: true }],
+  });
   if (!order) return res.status(404).send("No order found");
 
   res.send(order);

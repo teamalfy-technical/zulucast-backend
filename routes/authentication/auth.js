@@ -38,6 +38,10 @@ const storage = new Storage({
 
 const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET_URL);
 
+router.get("/zulucast", async (req, res) => {
+  res.send("Welcome to ZuluCast.com");
+});
+
 router.post("/login", async (req, res) => {
   const { error } = validateUserLogin(req.body);
   if (error) return res.status(400).send(error.details[0].message);

@@ -6,9 +6,14 @@ const { Storage } = require("@google-cloud/storage");
 const { Movies, validateMovie } = require("../../model/movies/movies");
 const { AdminAccess } = require("../../model/permission/admin");
 const { SuperAdminAccess } = require("../../model/permission/superAdmin");
+const { VideoId } = require("../../model/movies/videoId");
+const { TrailerVideoId } = require("../../model/movies/trailerVideoId");
 const AWS = require("aws-sdk");
 const config = require("config");
 const { v4: uuid } = require("uuid");
+
+var fs = require("fs");
+var tus = require("tus-js-client");
 
 const router = express.Router();
 
@@ -36,6 +41,13 @@ const storage = new Storage({
 
 const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET_URL);
 
+var mediaId = "";
+
+router.get("/test", async (req, res) => {
+  const movie = await Movies.find({ isBanner: true });
+  res.send(movie);
+});
+
 //[isAuth, isAdmin]
 router.post("/", async (req, res) => {
   const { error } = validateMovie(req.body);
@@ -50,8 +62,9 @@ router.post("/", async (req, res) => {
   if (req.body.isBanner) {
     const obj = await Movies.findOne({ isBanner: true });
     if (obj) {
-      obj.isBanner = false;
-      await obj.save();
+      // obj.isBanner = false;
+      // await obj.save();
+      await obj.remove();
     }
   }
 
@@ -210,5 +223,127 @@ router.post("/upload-video", [uploader.single("video")], async (req, res) => {
     );
   });
 });
+
+router.post(
+  "/upload-movie-video",
+  [uploader.single("video")],
+  async (req, res) => {
+    let myFile = req.file.originalname.split(".");
+    const fileType = myFile[myFile.length - 1];
+
+    await VideoId.remove({});
+
+    var options = {
+      endpoint:
+        "https://api.cloudflare.com/client/v4/accounts/e7e95bfc02adbac72ebcd01b0e78f228/stream",
+      headers: {
+        Authorization: "Bearer Fd7-d9CvTpyiiQVDGMhe5ZeWfv7qV-atapiEH_fi",
+      },
+      chunkSize: 50 * 1024 * 1024, // Required a minimum chunk size of 5MB, here we use 50MB.
+      resume: true,
+      metadata: {
+        filename: req.file.originalname,
+        filetype: fileType,
+        defaulttimestamppct: 0.5,
+      },
+      uploadSize: req.file.size,
+      onError: function (error) {
+        throw error;
+      },
+      onProgress: function (bytesUploaded, bytesTotal) {
+        var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+        console.log(bytesUploaded, bytesTotal, percentage + "%");
+      },
+      onSuccess: function (req, res) {
+        console.log("Upload finished");
+      },
+      onAfterResponse: async function (req, res) {
+        const newVideo = new VideoId({
+          videoId: res.getHeader("stream-media-id"),
+        });
+        const m = await newVideo.save();
+        return m;
+        // return new Promise(async (resolve) => {
+        //   var mediaIdHeader = res.getHeader("stream-media-id");
+        //   if (mediaIdHeader) {
+        //     var mediaId = mediaIdHeader;
+        //     const newVideo = new VideoId({
+        //       videoId: mediaId,
+        //     });
+        //     await newVideo.save();
+        //   }
+        //   resolve();
+        //   {
+        //   }
+        // });
+      },
+    };
+
+    var upload = new tus.Upload(req.file.buffer, options);
+    upload.start();
+    res.send("Finished");
+  }
+);
+
+router.post(
+  "/upload-trailer-video",
+  [uploader.single("video")],
+  async (req, res) => {
+    let myFile = req.file.originalname.split(".");
+    const fileType = myFile[myFile.length - 1];
+
+    await TrailerVideoId.remove({});
+
+    var options = {
+      endpoint:
+        "https://api.cloudflare.com/client/v4/accounts/e7e95bfc02adbac72ebcd01b0e78f228/stream",
+      headers: {
+        Authorization: "Bearer Fd7-d9CvTpyiiQVDGMhe5ZeWfv7qV-atapiEH_fi",
+      },
+      chunkSize: 50 * 1024 * 1024, // Required a minimum chunk size of 5MB, here we use 50MB.
+      resume: true,
+      metadata: {
+        filename: req.file.originalname,
+        filetype: fileType,
+        defaulttimestamppct: 0.5,
+      },
+      uploadSize: req.file.size,
+      onError: function (error) {
+        throw error;
+      },
+      onProgress: function (bytesUploaded, bytesTotal) {
+        var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+        console.log(bytesUploaded, bytesTotal, percentage + "%");
+      },
+      onSuccess: function (req, res) {
+        console.log("Upload finished");
+      },
+      onAfterResponse: async function (req, res) {
+        const newVideo = new TrailerVideoId({
+          videoId: res.getHeader("stream-media-id"),
+        });
+        const m = await newVideo.save();
+        return m;
+        // return new Promise(async (resolve) => {
+        //   var mediaIdHeader = res.getHeader("stream-media-id");
+        //   if (mediaIdHeader) {
+        //     var mediaId = mediaIdHeader;
+        //     const newVideo = new VideoId({
+        //       videoId: mediaId,
+        //     });
+        //     await newVideo.save();
+        //   }
+        //   resolve();
+        //   {
+        //   }
+        // });
+      },
+    };
+
+    var upload = new tus.Upload(req.file.buffer, options);
+    upload.start();
+    res.send("Finished");
+  }
+);
 
 module.exports = router;

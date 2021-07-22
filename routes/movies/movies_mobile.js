@@ -22,7 +22,9 @@ router.get("/recent", async (req, res) => {
 });
 
 router.get("/banner", async (req, res) => {
-  const movies = await Movies.find({ isBanner: false }).sort("uploadDate": -1).limit(1);
+  const movies = await Movies.find({ isBanner: false })
+    .sort({ uploadDate: -1 })
+    .limit(1);
   if (!movies) return res.status(404).send("No banner movie found");
 
   res.send(movies);

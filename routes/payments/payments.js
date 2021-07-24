@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     tx_ref: uuid(),
     amount,
     currency: "USD",
-    redirect_url: "https://www.africanmovies.com/success", //"https://zulucast.herokuapp.com/success",
+    redirect_url: "https://zulucast.herokuapp.com/success", //"https://www.africanmovies.com/success",
     payment_options: "card",
     meta: {
       consumer_id: 23,

@@ -1,5 +1,5 @@
-const express = require("express");
 const cors = require("cors");
+const express = require("express");
 const swaggerUI = require("swagger-ui-express");
 const swaggerDocument = require("../services/swagger.json");
 
@@ -20,8 +20,8 @@ const admin = require("../routes/permission/admin");
 const superAdmin = require("../routes/permission/superAdmin");
 
 module.exports = function (app) {
-  app.use(express.json());
   app.use(cors());
+  app.use(express.json());
   app.use("/api/auth", authRoute);
   app.use("/api/genre", genresRoute);
   app.use("/api/release", releaseTypeRoute);

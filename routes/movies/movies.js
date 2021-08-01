@@ -44,7 +44,15 @@ const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET_URL);
 var mediaId = "";
 
 router.get("/test", async (req, res) => {
-  const movie = await Movies.find({ isBanner: true });
+  const movie = await Movies.updateMany(
+    {},
+    {
+      $set: {
+        movieTrailerURL:
+          "https://zulucastbucket.s3.eu-west-1.amazonaws.com/582d7539-a13d-4990-8a92-ff48e26548a5.mp4",
+      },
+    }
+  );
   res.send(movie);
 });
 
@@ -62,9 +70,9 @@ router.post("/", async (req, res) => {
   if (req.body.isBanner) {
     const obj = await Movies.findOne({ isBanner: true });
     if (obj) {
-      // obj.isBanner = false;
-      // await obj.save();
-      await obj.remove();
+      obj.isBanner = false;
+      await obj.save();
+      //await obj.remove();
     }
   }
 

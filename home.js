@@ -48,3 +48,7 @@ upload.start();
 //"mongodb+srv://ibrahim:fatimalove@educloud.xxhcu.mongodb.net/zulu",
 //"FLWSECK_TEST-da8982749940be340f6821198f98b581-X",
 //"FLWSECK_TEST-da8982749940be340f6821198f98b581-X",
+
+// GCLOUD_PROJECT_ID="hypedup-4e4f6"
+// GCLOUD_APPLICATION_CREDENTIALS="./services/zulu.json"
+// GCLOUD_STORAGE_BUCKET_URL="gs://hypedup-4e4f6.appspot.com"
